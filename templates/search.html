@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>🔍 {{ get_text('search', lang) }}</h2>
+    <div class="search-grid">
+        <div class="search-item">
+            <h3>📂 {{ get_text('category', lang) }}</h3>
+            <form method="GET" action="{{ url_for('search') }}">
+                <select name="category">
+                    <option value="{{ get_text('all_categories', lang) }}">{{ get_text('all_categories', lang) }}</option>
+                    {% for cat in get_categories(lang) %}
+                        <option value="{{ cat }}">{{ cat }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="button" style="margin-top: 0.5rem; width: 100%;">
+                    🔍 {{ get_text('search', lang) }}
+                </button>
+            </form>
+        </div>
+        <div class="search-item">
+            <h3>📝 {{ get_text('search_by_title', lang) }}</h3>
+            <form method="GET" action="{{ url_for('search') }}">
+                <input type="hidden" name="category" value="{{ get_text('all_categories', lang) }}">
+                <input type="text" name="search_title" value="{{ search_title }}" placeholder="{{ get_text('enter_title', lang) }}">
+                <button type="submit" class="button" style="margin-top: 0.5rem; width: 100%;">
+                    🔍 {{ get_text('search', lang) }}
+                </button>
+            </form>
+        </div>
+        <div class="search-item">
+            <h3>👤 {{ get_text('search_by_author', lang) }}</h3>
+            <form method="GET" action="{{ url_for('search') }}">
+                <input type="hidden" name="category" value="{{ get_text('all_categories', lang) }}">
+                <input type="text" name="search_author" value="{{ search_author }}" placeholder="{{ get_text('enter_author', lang) }}">
+                <button type="submit" class="button" style="margin-top: 0.5rem; width: 100%;">
+                    🔍 {{ get_text('search', lang) }}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<h2>📋 {{ get_text('search_results', lang) }}</h2>
+<div class="recipe-grid">
+    {% for recipe in recipes %}
+        <div class="card">
+            <h3>{{ recipe.title }}</h3>
+            <p>🏷️ {{ recipe.category }}</p>
+            <p>⏱️ {{ recipe.preparation_time }} {{ get_text('minutes', lang) }}</p>
+            <p>👤 {{ get_text('author', lang) }}: <a href="{{ url_for('profile', user_id=recipe.user_id) }}" style="color: #667eea; text-decoration: none;">{{ recipe.author_name }}</a></p>
+            <div style="margin-top: 1rem;">
+                <a href="{{ url_for('view_recipe', recipe_id=recipe.id) }}" class="button" style="display: inline-block; text-decoration: none;">👁️ {{ get_text('view', lang) }}</a>
+                <a href="{{ url_for('download_recipe', recipe_id=recipe.id) }}" class="button" style="display: inline-block; text-decoration: none; background: linear-gradient(135deg, #28a745, #20c997);">⬇️ {{ get_text('download', lang) }}</a>
+            </div>
+            {% if current_user and (current_user.id == recipe.user_id or current_user.role in ['moderator', 'creator']) %}
+                {% if current_user.role == 'moderator' and recipe.is_private %}
+                {% else %}
+                    <div style="margin-top: 0.75rem;">
+                        <form method="POST" action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" onsubmit="return confirm('{{ get_text('delete_recipe_confirm', lang) }}')" style="display: inline;">
+                            <button type="submit" style="background: linear-gradient(135deg, #dc3545, #c82333);">
+                                🗑️ {{ get_text('delete', lang) }}
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="card">
+            <p>{{ get_text('no_recipes', lang) }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

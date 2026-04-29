@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>🔍 {{ get_text('user_search', lang) }}</h2>
+    <form method="GET" action="{{ url_for('users_list') }}">
+        <input type="text" name="search" value="{{ search }}" placeholder="{{ get_text('search_users', lang) }}" style="width: 70%; display: inline-block;">
+        <button type="submit" class="button" style="width: 28%;">🔍 {{ get_text('search', lang) }}</button>
+    </form>
+</div>
+<h2>📋 {{ get_text('users_list', lang) }}</h2>
+<div class="recipe-grid">
+    {% for user in users %}
+        <div class="card">
+            <h3>👤 {{ user.username }}</h3>
+            <p>⭐ {{ get_text('role', lang) }}: {{ get_role_name(user.role, lang) }}</p>
+            <div style="margin-top: 1rem;">
+                <a href="{{ url_for('profile', user_id=user.id) }}" class="button" style="display: inline-block; text-decoration: none;">
+                    👁️ {{ get_text('profile', lang) }}
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="card">
+            <p>{% if lang == 'ru' %}Пользователи не найдены{% else %}No users found{% endif %}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

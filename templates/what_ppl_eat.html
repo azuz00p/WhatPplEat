@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>🎲 {{ get_text('what_ppl_eat', lang) }}</h2>
+    <p style="margin-bottom: 1rem;">
+        {% if lang == 'ru' %}
+            Выберите категорию, и мы покажем вам случайный рецепт из этой категории!
+        {% else %}
+            Choose a category and we'll show you a random recipe from that category!
+        {% endif %}
+    </p>
+    <form method="POST" action="{{ url_for('what_ppl_eat') }}">
+        <select name="category" required>
+            <option value="">{{ get_text('select_category', lang) }}</option>
+            {% for cat in categories %}
+                <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+            <option value="random">🎲 {{ get_text('random_category', lang) }}</option>
+        </select>
+        <button type="submit" class="button" style="margin-top: 0.5rem;">
+            🎲 {{ get_text('random_recipe', lang) }}
+        </button>
+    </form>
+</div>
+
+{% if recipe %}
+    <div class="card">
+        <pre style="background: none; padding: 0;">==================================================
+{{ get_text('title_label', lang) if lang == 'ru' else 'RECIPE' }}: {{ parsed.title }}
+==================================================
+{{ get_text('category', lang) }}: {{ parsed.category }}
+{{ get_text('preparation_time', lang) }}: {{ parsed.preparation_time }} {{ get_text('minutes', lang) }}
+
+{{ get_text('ingredients_label', lang).upper() }}:
+--------------------
+{{ parsed.ingredients }}
+
+{{ get_text('instructions_label', lang).upper() }}:
+------------------------------
+{{ parsed.instructions }}</pre>
+        <div style="margin-top: 1rem;">
+            <a href="{{ url_for('download_recipe', recipe_id=recipe.id) }}" class="button">
+                ⬇️ {{ get_text('download', lang) }}
+            </a>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

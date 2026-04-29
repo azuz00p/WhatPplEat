@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <pre style="background: none; padding: 0;">==================================================
+{{ get_text('title_label', lang) if lang == 'ru' else 'RECIPE' }}: {{ parsed.title }}
+==================================================
+{{ get_text('category', lang) }}: {{ parsed.category }}
+{{ get_text('preparation_time', lang) }}: {{ parsed.preparation_time }} {{ get_text('minutes', lang) }}
+
+{{ get_text('ingredients_label', lang).upper() }}:
+--------------------
+{{ parsed.ingredients }}
+
+{{ get_text('instructions_label', lang).upper() }}:
+------------------------------
+{{ parsed.instructions }}</pre>
+    <p style="margin-top: 1rem; color: #666;">
+        👤 {{ get_text('author', lang) }}:
+        <a href="{{ url_for('profile', user_id=author.id) }}" style="color: #667eea; text-decoration: none;">{{ author.username }}</a>
+        ({{ get_role_name(author.role, lang) }})
+    </p>
+    {% if recipe.is_private %}
+        <p style="margin-top: 0.5rem;">
+            🔒 <strong>{{ get_text('private_recipe', lang) }}</strong>
+        </p>
+        {% if recipe.share_token %}
+            <p style="margin-top: 0.5rem;">
+                🔗 <strong>{{ get_text('share_link', lang) }}:</strong><br>
+                <input type="text" value="{{ url_for('share_recipe', token=recipe.share_token, _external=True) }}" readonly style="width: 100%;">
+                <button onclick="copyToClipboard(this.previousElementSibling.value)" class="button" style="margin-top: 0.5rem;">
+                    📋 {{ get_text('copy_link', lang) }}
+                </button>
+            </p>
+        {% endif %}
+    {% endif %}
+    <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('download_recipe', recipe_id=recipe.id) }}" class="button">
+            ⬇️ {{ get_text('download', lang) }}
+        </a>
+        {% if current_user and (current_user.id == recipe.user_id or current_user.role in ['moderator', 'creator']) %}
+            {% if current_user.role == 'moderator' and recipe.is_private %}
+                <small style="color: gray;">{% if lang == 'ru' %}Модератор не может удалять приватные рецепты{% else %}Moderators cannot delete private recipes{% endif %}</small>
+            {% else %}
+                <form method="POST" action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" onsubmit="return confirm('{{ get_text('delete_recipe_confirm', lang) }}')" style="display: inline;">
+                    <button type="submit" style="background: linear-gradient(135deg, #dc3545, #c82333);">
+                        🗑️ {{ get_text('delete', lang) }}
+                    </button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text);
+    alert('{{ get_text('link_copied', lang) }}');
+}
+</script>
+{% endblock %}

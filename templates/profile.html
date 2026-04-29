@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>👤 {{ profile_user.username }}</h2>
+    <p><strong>📊 {{ get_text('recipes_count', lang) }}:</strong> {{ recipes_count }}</p>
+    <p><strong>⭐ {{ get_text('role', lang) }}:</strong> {{ get_role_name(profile_user.role, lang) }}</p>
+    {% if current_user and current_user.id != profile_user.id %}
+        {% if current_user.role == 'moderator' and profile_user.role not in ['moderator', 'creator'] %}
+            <div class="role-buttons">
+                <form method="POST" action="{{ url_for('change_role', user_id=profile_user.id) }}" style="display: inline;">
+                    <input type="hidden" name="role" value="banned">
+                    <button type="submit" class="role-btn {% if profile_user.role == 'banned' %}active{% endif %}">
+                        ⛔ {{ 'Заблокирован' if lang == 'ru' else 'Banned' }}
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('change_role', user_id=profile_user.id) }}" style="display: inline;">
+                    <input type="hidden" name="role" value="user">
+                    <button type="submit" class="role-btn {% if profile_user.role == 'user' %}active{% endif %}">
+                        ⬛ {{ 'Простой пользователь' if lang == 'ru' else 'Regular User' }}
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('change_role', user_id=profile_user.id) }}" style="display: inline;">
+                    <input type="hidden" name="role" value="active">
+                    <button type="submit" class="role-btn {% if profile_user.role == 'active' %}active{% endif %}">
+                        🟨 {{ 'Активный пользователь' if lang == 'ru' else 'Active User' }}
+                    </button>
+                </form>
+            </div>
+        {% elif current_user.role == 'creator' and current_user.id != profile_user.id %}
+            <div class="role-buttons">
+                <form method="POST" action="{{ url_for('change_role', user_id=profile_user.id) }}" style="display: inline;">
+                    <input type="hidden" name="role" value="banned">
+                    <button type="submit" class="role-btn {% if profile_user.role == 'banned' %}active{% endif %}">
+                        ⛔ {{ 'Заблокирован' if lang == 'ru' else 'Banned' }}
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('change_role', user_id=profile_user.id) }}" style="display: inline;">
+                    <input type="hidden" name="role" value="user">
+                    <button type="submit" class="role-btn {% if profile_user.role == 'user' %}active{% endif %}">
+                        ⬛ {{ 'Простой пользователь' if lang == 'ru' else 'Regular User' }}
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('change_role', user_id=profile_user.id) }}" style="display: inline;">
+                    <input type="hidden" name="role" value="active">
+                    <button type="submit" class="role-btn {% if profile_user.role == 'active' %}active{% endif %}">
+                        🟨 {{ 'Активный пользователь' if lang == 'ru' else 'Active User' }}
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('change_role', user_id=profile_user.id) }}" style="display: inline;">
+                    <input type="hidden" name="role" value="moderator">
+                    <button type="submit" class="role-btn {% if profile_user.role == 'moderator' %}active{% endif %}">
+                        🛑 {{ 'Модератор' if lang == 'ru' else 'Moderator' }}
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+<h2>📚 {{ get_text('public_recipes', lang) if current_user and current_user.id != profile_user.id else 'Рецепты пользователя' }}</h2>
+<div class="recipe-grid">
+    {% for recipe in recipes %}
+        <div class="card">
+            <h3>{{ recipe.title }}</h3>
+            <p>🏷️ {{ recipe.category }}</p>
+            <p>⏱️ {{ recipe.preparation_time }} {{ get_text('minutes', lang) }}</p>
+            {% if recipe.is_private %}
+                <p>🔒 {{ get_text('private', lang) }}</p>
+            {% endif %}
+            <div style="margin-top: 1rem;">
+                <a href="{{ url_for('view_recipe', recipe_id=recipe.id) }}" class="button" style="display: inline-block; text-decoration: none;">👁️ {{ get_text('view', lang) }}</a>
+                <a href="{{ url_for('download_recipe', recipe_id=recipe.id) }}" class="button" style="display: inline-block; text-decoration: none; background: linear-gradient(135deg, #28a745, #20c997);">⬇️ {{ get_text('download', lang) }}</a>
+            </div>
+            {% if current_user and (current_user.id == recipe.user_id or current_user.role in ['moderator', 'creator']) %}
+                {% if current_user.role == 'moderator' and recipe.is_private %}
+                {% else %}
+                    <div style="margin-top: 0.75rem;">
+                        <form method="POST" action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" onsubmit="return confirm('{{ get_text('delete_recipe_confirm', lang) }}')" style="display: inline;">
+                            <button type="submit" style="background: linear-gradient(135deg, #dc3545, #c82333);">
+                                🗑️ {{ get_text('delete', lang) }}
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endif %}
+            {% if recipe.is_private and recipe.share_token and current_user and current_user.id == recipe.user_id %}
+                <div style="margin-top: 1rem;">
+                    <small>
+                        🔗 {{ get_text('share_link', lang) }}:<br>
+                        <input type="text" value="{{ url_for('share_recipe', token=recipe.share_token, _external=True) }}" readonly style="font-size: 0.8rem; padding: 0.25rem;">
+                        <button onclick="copyToClipboard(this.previousElementSibling.value)" style="font-size: 0.8rem; padding: 0.25rem 0.5rem; margin-top: 0.25rem;">
+                            📋 {{ get_text('copy', lang) }}
+                        </button>
+                    </small>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="card">
+            <p>{{ get_text('no_user_recipes', lang) }}</p>
+        </div>
+    {% endfor %}
+</div>
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text);
+    alert('{{ get_text('link_copied', lang) }}');
+}
+</script>
+{% endblock %}

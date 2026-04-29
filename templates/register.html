@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+    <h2>📝 {{ get_text('register', lang) }}</h2>
+    <form method="POST">
+        <div>
+            <label>{{ get_text('username', lang) }}</label>
+            <input type="text" name="username" required placeholder="{{ get_text('username', lang) }}">
+        </div>
+        <div>
+            <label>{{ get_text('password', lang) }}</label>
+            <input type="password" name="password" required placeholder="{{ get_text('password', lang) }}">
+        </div>
+        <div style="margin-top: 1rem;">
+            <button type="submit" class="button">{{ get_text('register', lang) }}</button>
+        </div>
+    </form>
+    <p style="margin-top: 1rem;">
+        {% if lang == 'ru' %}
+            Уже есть аккаунт? <a href="{{ url_for('login') }}">{{ get_text('login', lang) }}</a>
+        {% else %}
+            Already have an account? <a href="{{ url_for('login') }}">{{ get_text('login', lang) }}</a>
+        {% endif %}
+    </p>
+</div>
+{% endblock %}

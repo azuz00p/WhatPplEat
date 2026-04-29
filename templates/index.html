@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h1>🍲 {{ get_text('welcome', lang) }}</h1>
+    <p style="margin-top: 1rem; font-size: 1.1rem;">
+        {% if lang == 'ru' %}
+            Делитесь своими рецептами, находите новые идеи для блюд и вдохновляйтесь вместе с нами!
+        {% else %}
+            Share your recipes, find new meal ideas and get inspired together with us!
+        {% endif %}
+    </p>
+</div>
+
+<h2>🔥 {{ get_text('public_recipes', lang) }}</h2>
+<div class="recipe-grid">
+    {% for recipe in recipes %}
+        <div class="card">
+            <h3>{{ recipe.title }}</h3>
+            <p>🏷️ {{ recipe.category }}</p>
+            <p>⏱️ {{ recipe.preparation_time }} {{ get_text('minutes', lang) }}</p>
+            <p>👤 {{ get_text('author', lang) }}: <a href="{{ url_for('profile', user_id=recipe.user_id) }}" style="color: #667eea; text-decoration: none;">{{ recipe.author_name }}</a></p>
+            <div style="margin-top: 1rem;">
+                <a href="{{ url_for('view_recipe', recipe_id=recipe.id) }}" class="button" style="display: inline-block; text-decoration: none;">👁️ {{ get_text('view', lang) }}</a>
+                <a href="{{ url_for('download_recipe', recipe_id=recipe.id) }}" class="button" style="display: inline-block; text-decoration: none; background: linear-gradient(135deg, #28a745, #20c997);">⬇️ {{ get_text('download', lang) }}</a>
+            </div>
+            {% if current_user and (current_user.id == recipe.user_id or current_user.role in ['moderator', 'creator']) %}
+                {% if current_user.role == 'moderator' and recipe.is_private %}
+                {% else %}
+                    <div style="margin-top: 0.75rem;">
+                        <form method="POST" action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" onsubmit="return confirm('{{ get_text('delete_recipe_confirm', lang) }}')" style="display: inline;">
+                            <button type="submit" style="background: linear-gradient(135deg, #dc3545, #c82333);">
+                                🗑️ {{ get_text('delete', lang) }}
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="card">
+            <p>{{ get_text('no_recipes', lang) }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

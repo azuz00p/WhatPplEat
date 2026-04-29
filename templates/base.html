@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ get_text('title', lang) }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.light {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #1e1e2f 0%, #2d2d44 100%);
+            color: #eee;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        body.dark .navbar {
+            background: rgba(30, 30, 47, 0.95);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .footer-nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        body.dark .footer-nav {
+            background: rgba(30, 30, 47, 0.95);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-links, .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a, .footer-links a {
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        body.dark .nav-links a, body.dark .footer-links a {
+            color: #88ccff;
+        }
+
+        .nav-links a:hover, .footer-links a:hover {
+            color: #764ba2;
+        }
+
+        body.dark .nav-links a:hover, body.dark .footer-links a:hover {
+            color: #ffaa88;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .footer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .username-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        body.dark .username-link {
+            color: #88ccff;
+        }
+
+        .username-link:hover {
+            color: #764ba2;
+        }
+
+        body.dark .username-link:hover {
+            color: #ffaa88;
+        }
+
+        .controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .theme-btn, .lang-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        body.light .lang-btn {
+            color: black;
+            background: rgba(0,0,0,0.1);
+        }
+
+        body.dark .lang-btn {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+
+        body.light .theme-btn {
+            background: rgba(0,0,0,0.1);
+        }
+
+        body.dark .theme-btn {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .theme-btn:hover, .lang-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        body.dark .alert-success {
+            background: #1e3a2f;
+            color: #a8e6cf;
+            border-color: #2d5a4a;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        body.dark .alert-danger {
+            background: #3a1e22;
+            color: #ffaaaa;
+            border-color: #5a2d33;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        body.dark .alert-warning {
+            background: #3a2e1e;
+            color: #ffd966;
+            border-color: #5a4a2d;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        body.dark .card {
+            background: #2a2a3a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        button, .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover, .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        body.dark input, body.dark select, body.dark textarea {
+            background: #1e1e2f;
+            color: #eee;
+            border-color: #444;
+        }
+
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        body.dark pre {
+            background: #1e1e2f;
+            color: #ddd;
+        }
+
+        hr {
+            margin: 1rem 0;
+            border-color: #ddd;
+        }
+
+        body.dark hr {
+            border-color: #444;
+        }
+
+        .checkbox-wrapper {
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-wrapper input {
+            width: auto;
+            margin: 0;
+        }
+
+        .time-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .time-input-wrapper input {
+            width: 120px;
+            margin: 0;
+        }
+
+        .role-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .role-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #667eea;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .role-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .role-btn:hover:not(.active) {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .search-section {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        /* Стили для двухколоночного поиска */
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .search-item {
+            background: rgba(102, 126, 234, 0.03);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+            }
+            .footer-nav {
+                flex-direction: column;
+            }
+            .container {
+                padding: 0 1rem;
+            }
+            .recipe-grid {
+                grid-template-columns: 1fr;
+            }
+            .user-info {
+                margin-left: 0;
+            }
+            .footer-info {
+                margin-left: 0;
+            }
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="{{ theme }}">
+    <div class="navbar">
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}" style="font-size: 1.5rem; font-weight: bold;">🍽️ {{ get_text('title', lang) }}</a>
+            {% if current_user %}
+                <a href="{{ url_for('new_recipe') }}">➕ {{ get_text('new_recipe', lang) }}</a>
+                {% if current_user.role in ['moderator', 'creator'] %}
+                    <a href="{{ url_for('users_list') }}">👥 {{ 'Пользователи' if lang == 'ru' else 'Users' }}</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}">🚪 {{ get_text('logout', lang) }}</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">🔑 {{ get_text('login', lang) }}</a>
+                <a href="{{ url_for('register') }}">📝 {{ get_text('register', lang) }}</a>
+            {% endif %}
+            <a href="{{ url_for('search') }}">🔍 {{ get_text('search', lang) }}</a>
+            <a href="{{ url_for('what_ppl_eat') }}">🎲 {{ get_text('what_ppl_eat', lang) }}</a>
+        </div>
+
+        <div class="user-info">
+            {% if current_user %}
+                <a href="{{ url_for('profile', user_id=current_user.id) }}" class="username-link">👤 {{ current_user.username }}</a>
+            {% endif %}
+            <div class="controls">
+                <button class="lang-btn" onclick="window.location.href='{{ url_for('set_lang') }}'">{{ 'RU' if lang == 'ru' else 'EN' }}</button>
+                <button class="theme-btn" onclick="window.location.href='{{ url_for('set_theme') }}'">
+                    {% if theme == 'light' %}☀️{% else %}
+                        {% set random_num = range(1, 11) | random %}
+                        {% if random_num == 1 %}🦇{% else %}🌙{% endif %}
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <div class="footer-nav">
+        <div class="footer-links">
+            <a href="https://github.com/azuz00p/WhatPplEat" target="_blank" style="font-weight: bold;">💻 GitHub</a>
+            <a href="https://github.com/azuz00p/WhatTheEat/releases/tag/New_functions" target="_blank" style="font-weight: bold;">
+                {% if lang == 'ru' %}📦 Скачать ЧёПоесть{% else %}📦 Install WhatTheEat{% endif %}
+            </a>
+        </div>
+    </div>
+</body>
+</html>

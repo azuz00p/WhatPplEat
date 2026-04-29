@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>➕ {{ get_text('new_recipe', lang) }}</h2>
+    <div style="background: rgba(102, 126, 234, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <h3>📂 {{ get_text('import_recipe', lang) }}</h3>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="import_file" accept=".txt" required>
+            <button type="submit" name="import" class="button" style="margin-top: 0.5rem;">{{ get_text('import', lang) }}</button>
+        </form>
+    </div>
+    <form method="POST">
+        <div>
+            <label>{{ get_text('title_label', lang) }}</label>
+            <input type="text" name="title" required value="{{ imported_data.title if imported_data else '' }}">
+        </div>
+
+        <div>
+            <label>{{ get_text('category', lang) }}</label>
+            <select name="category" required>
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {% if imported_data and imported_data.category == cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label>{{ get_text('preparation_time', lang) }}</label>
+            <div class="time-input-wrapper">
+                <input type="number" name="preparation_time" value="{{ imported_data.preparation_time if imported_data else 30 }}" min="1" max="999" step="1" style="width: 120px;">
+                <span>{{ get_text('minutes', lang) }}</span>
+            </div>
+        </div>
+
+        <div>
+            <label>{{ get_text('ingredients_label', lang) }}</label>
+            <textarea name="ingredients" rows="8" required placeholder="{% if lang == 'ru' %}• 2 стакана муки&#10;• 1 стакан сахара&#10;• 3 яйца&#10;• 100 г сливочного масла{% else %}• 2 cups flour&#10;• 1 cup sugar&#10;• 3 eggs&#10;• 100g butter{% endif %}">{{ imported_data.ingredients if imported_data else '' }}</textarea>
+        </div>
+
+        <div>
+            <label>{{ get_text('instructions_label', lang) }}</label>
+            <textarea name="instructions" rows="10" required placeholder="{% if lang == 'ru' %}1. Разогрейте духовку до 180°C&#10;2. Смешайте сухие ингредиенты&#10;3. Добавьте яйца и масло&#10;4. Выпекайте 30 минут&#10;5. Дайте остыть перед подачей{% else %}1. Preheat oven to 180°C&#10;2. Mix dry ingredients&#10;3. Add eggs and butter&#10;4. Bake for 30 minutes&#10;5. Let cool before serving{% endif %}">{{ imported_data.instructions if imported_data else '' }}</textarea>
+        </div>
+
+        <div class="checkbox-wrapper">
+            <input type="checkbox" name="is_private" id="is_private">
+            <label for="is_private">{{ get_text('private_label', lang) }}</label>
+        </div>
+
+        <div style="margin-top: 1rem;">
+            <button type="submit" name="publish" class="button">{{ get_text('publish', lang) }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
