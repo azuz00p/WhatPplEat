@@ -271,8 +271,12 @@
 
         .recipe-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
+        }
+
+        /* Стили для 3 колонок */
+        .recipe-grid-3cols {
+            grid-template-columns: repeat(3, 1fr);
         }
 
         pre {
@@ -367,6 +371,12 @@
             border-radius: 8px;
         }
 
+        @media (max-width: 900px) {
+            .recipe-grid-3cols {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
@@ -377,9 +387,6 @@
             .container {
                 padding: 0 1rem;
             }
-            .recipe-grid {
-                grid-template-columns: 1fr;
-            }
             .user-info {
                 margin-left: 0;
             }
@@ -387,6 +394,12 @@
                 margin-left: 0;
             }
             .search-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .recipe-grid-3cols {
                 grid-template-columns: 1fr;
             }
         }

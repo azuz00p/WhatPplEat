@@ -210,10 +210,10 @@ def get_text(key, lang):
             'preparation_time': 'Время приготовления',
             'minutes': 'минут',
             'recipes_count': 'опубликовано рецептов',
-            'role': 'Роль',
-            'change_role': 'Изменить роль',
-            'role_changed': 'Роль успешно изменена!',
-            'cant_change_yourself': 'Вы не можете изменить роль самому себе',
+            'role': 'Статус',
+            'change_role': 'Изменить статус',
+            'role_changed': 'Статус успешно изменён!',
+            'cant_change_yourself': 'Вы не можете изменить статус самому себе',
             'delete_recipe_confirm': 'Вы уверены, что хотите удалить этот рецепт?',
             'user_search': 'Поиск пользователей',
             'search_users': 'Найти пользователя',
@@ -277,10 +277,10 @@ def get_text(key, lang):
             'preparation_time': 'Preparation time',
             'minutes': 'minutes',
             'recipes_count': 'recipes published',
-            'role': 'Role',
-            'change_role': 'Change role',
-            'role_changed': 'Role changed successfully!',
-            'cant_change_yourself': 'You cannot change your own role',
+            'role': 'Status',
+            'change_role': 'Change status',
+            'role_changed': 'Status changed successfully!',
+            'cant_change_yourself': 'You cannot change your own status',
             'delete_recipe_confirm': 'Are you sure you want to delete this recipe?',
             'user_search': 'User Search',
             'search_users': 'Search users',
@@ -487,7 +487,7 @@ def change_role(user_id):
             conn.commit()
             flash(get_text('role_changed', lang), 'success')
         else:
-            flash('У вас нет прав для назначения этой роли', 'danger')
+            flash('У вас нет прав для назначения этого статуса', 'danger')
     else:
         abort(403)
     conn.close()

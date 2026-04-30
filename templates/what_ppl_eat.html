@@ -9,6 +9,7 @@
             Choose a category and we'll show you a random recipe from that category!
         {% endif %}
     </p>
+
     <form method="POST" action="{{ url_for('what_ppl_eat') }}">
         <select name="category" required>
             <option value="">{{ get_text('select_category', lang) }}</option>

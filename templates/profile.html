@@ -4,6 +4,7 @@
     <h2>👤 {{ profile_user.username }}</h2>
     <p><strong>📊 {{ get_text('recipes_count', lang) }}:</strong> {{ recipes_count }}</p>
     <p><strong>⭐ {{ get_text('role', lang) }}:</strong> {{ get_role_name(profile_user.role, lang) }}</p>
+
     {% if current_user and current_user.id != profile_user.id %}
         {% if current_user.role == 'moderator' and profile_user.role not in ['moderator', 'creator'] %}
             <div class="role-buttons">
@@ -56,8 +57,9 @@
         {% endif %}
     {% endif %}
 </div>
+
 <h2>📚 {{ get_text('public_recipes', lang) if current_user and current_user.id != profile_user.id else 'Рецепты пользователя' }}</h2>
-<div class="recipe-grid">
+<div class="recipe-grid recipe-grid-3cols">
     {% for recipe in recipes %}
         <div class="card">
             <h3>{{ recipe.title }}</h3>
@@ -72,6 +74,7 @@
             </div>
             {% if current_user and (current_user.id == recipe.user_id or current_user.role in ['moderator', 'creator']) %}
                 {% if current_user.role == 'moderator' and recipe.is_private %}
+                    <!-- Модератор не может удалить приватный рецепт -->
                 {% else %}
                     <div style="margin-top: 0.75rem;">
                         <form method="POST" action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" onsubmit="return confirm('{{ get_text('delete_recipe_confirm', lang) }}')" style="display: inline;">
@@ -100,6 +103,7 @@
         </div>
     {% endfor %}
 </div>
+
 <script>
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text);

@@ -2,6 +2,7 @@
 {% block content %}
 <div class="card">
     <h2>🔍 {{ get_text('search', lang) }}</h2>
+
     <div class="search-grid">
         <div class="search-item">
             <h3>📂 {{ get_text('category', lang) }}</h3>
@@ -17,6 +18,7 @@
                 </button>
             </form>
         </div>
+
         <div class="search-item">
             <h3>📝 {{ get_text('search_by_title', lang) }}</h3>
             <form method="GET" action="{{ url_for('search') }}">
@@ -27,6 +29,7 @@
                 </button>
             </form>
         </div>
+
         <div class="search-item">
             <h3>👤 {{ get_text('search_by_author', lang) }}</h3>
             <form method="GET" action="{{ url_for('search') }}">
@@ -39,8 +42,9 @@
         </div>
     </div>
 </div>
+
 <h2>📋 {{ get_text('search_results', lang) }}</h2>
-<div class="recipe-grid">
+<div class="recipe-grid recipe-grid-3cols">
     {% for recipe in recipes %}
         <div class="card">
             <h3>{{ recipe.title }}</h3>
@@ -53,6 +57,7 @@
             </div>
             {% if current_user and (current_user.id == recipe.user_id or current_user.role in ['moderator', 'creator']) %}
                 {% if current_user.role == 'moderator' and recipe.is_private %}
+                    <!-- Модератор не может удалить приватный рецепт -->
                 {% else %}
                     <div style="margin-top: 0.75rem;">
                         <form method="POST" action="{{ url_for('delete_recipe', recipe_id=recipe.id) }}" onsubmit="return confirm('{{ get_text('delete_recipe_confirm', lang) }}')" style="display: inline;">

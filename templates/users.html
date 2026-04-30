@@ -7,8 +7,9 @@
         <button type="submit" class="button" style="width: 28%;">🔍 {{ get_text('search', lang) }}</button>
     </form>
 </div>
+
 <h2>📋 {{ get_text('users_list', lang) }}</h2>
-<div class="recipe-grid">
+<div class="recipe-grid recipe-grid-3cols">
     {% for user in users %}
         <div class="card">
             <h3>👤 {{ user.username }}</h3>
