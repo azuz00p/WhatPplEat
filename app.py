@@ -7,6 +7,8 @@ from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, send_file, abort, make_response
 
 app = Flask(__name__)
+secret_key = 'vU4zdDK7anhhRdNpEFJApoReVQDPXwRk1vZKcSKQtsWGwZGOP9EpE9DFWXJEJsXRRtB4f957FZztNudPto8wdyg617qOJc7NxzZ9'
+app.config['SECRET_KEY'] = secret_key
 app.config['RECIPES_FOLDER'] = 'recipes'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['RECIPES_FOLDER'], exist_ok=True)
