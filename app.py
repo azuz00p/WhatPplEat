@@ -7,7 +7,6 @@ from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, send_file, abort, make_response
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-change-in-production'
 app.config['RECIPES_FOLDER'] = 'recipes'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['RECIPES_FOLDER'], exist_ok=True)
@@ -105,6 +104,7 @@ def login_required(f):
             flash('Please login to access this page', 'danger')
             return redirect(url_for('login'))
         return f(*args, **kwargs)
+
     wrapper.__name__ = f.__name__
     return wrapper
 
@@ -115,6 +115,7 @@ def moderator_required(f):
         if not user or user['role'] not in ['moderator', 'creator']:
             abort(403)
         return f(*args, **kwargs)
+
     wrapper.__name__ = f.__name__
     return wrapper
 
@@ -125,6 +126,7 @@ def creator_required(f):
         if not user or user['role'] != 'creator':
             abort(403)
         return f(*args, **kwargs)
+
     wrapper.__name__ = f.__name__
     return wrapper
 
@@ -209,7 +211,7 @@ def get_text(key, lang):
             'fill_form': 'Импортированные данные:',
             'preparation_time': 'Время приготовления',
             'minutes': 'минут',
-            'recipes_count': 'опубликовано рецептов',
+            'recipes_count': 'Опубликовано рецептов',
             'role': 'Статус',
             'change_role': 'Изменить статус',
             'role_changed': 'Статус успешно изменён!',
@@ -276,7 +278,7 @@ def get_text(key, lang):
             'fill_form': 'Imported data:',
             'preparation_time': 'Preparation time',
             'minutes': 'minutes',
-            'recipes_count': 'recipes published',
+            'recipes_count': 'Recipes published',
             'role': 'Status',
             'change_role': 'Change status',
             'role_changed': 'Status changed successfully!',
@@ -388,7 +390,6 @@ def register():
             flash(get_text('username_exists', lang), 'danger')
             conn.close()
             return redirect(url_for('register'))
-
         password_hash = hash_password(password)
         conn.execute('INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)',
                      (username, password_hash, 'user'))
