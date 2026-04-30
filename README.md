@@ -3,6 +3,8 @@
 [![PyQT](https://img.shields.io/badge/build_with-Flask-blue)](https://pypi.org/project/Flask/)
 [![PyQT](https://img.shields.io/badge/github-WhatTheEat-orange?logo=github)](https://github.com/azuz00p/WhatTheEat)
 
+[![PyQT](https://img.shields.io/badge/site-WhatPplEat-green)](https://azuz00p.pythonanywhere.com/)
+
 More information about the project below. For english description and instructions, scroll down.
 
 Also if you find any bugs or issues, feel free to tell me about them in Issues section. I will appreciate it a lot!
