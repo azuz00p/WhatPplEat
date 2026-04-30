@@ -11,6 +11,15 @@ Also if you find any bugs or issues, feel free to tell me about them in Issues s
 
 If you think that this site is a sequel to WhatTheEat, then... Well, guess some of it is true.
 
+> [!CAUTION]  
+> Сайт может не работать или работать нестабильно у пользователей из РФ!
+> 
+> Чтобы это исправить, рекомндуется использовать альтернативные способы подключения к интернету, которые позволяют изменить виртуальное местоположение устройства.
+> 
+> Приношу извинения за неудобства!
+>
+> P.S. if you are not from Russia, then ignore this message.
+
 ## RU Описание
 
 ЧёЕдят - сайт, который позволяет делиться с миром и близкими своими кулинарными рецептами.
